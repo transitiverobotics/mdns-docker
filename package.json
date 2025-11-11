@@ -1,0 +1,21 @@
+{
+  "name": "mdns-docker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "index.js",
+  "keywords": ["mdns", "docker", "dns"],
+  "author": "Christian Fritz",
+  "license": "ISC",
+  "description": "Tiny script to provide local DNS resolution for Docker container names using mDNS.",
+ 	"repository": {
+   	"type": "git",
+   	"url": "github:transitiverobotics/mdns-docker"
+  },
+  "dependencies": {
+    "dockerode": "^4.0.9",
+    "multicast-dns": "^7.2.5"
+  }
+}
