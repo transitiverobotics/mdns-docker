@@ -11,28 +11,29 @@ const docker = new Docker();
 
 
 const IPs = {}; // lookup from container name to IP
-const refreshContainerIPs = async () => {
+const refreshContainerIPs = async (log = false) => {
   const list = await docker.listContainers();
   list.forEach(c => {
-    const name = c.Names[0].slice(1); // remove '/'
+    // const name = c.Names[0].slice(1); // remove '/'
+    const image = c.Image;
     for (let net in c.NetworkSettings.Networks) {
       if (c.NetworkSettings.Networks[net].IPAddress)
-        IPs[name] = c.NetworkSettings.Networks[net].IPAddress;
+        IPs[image] = c.NetworkSettings.Networks[net].IPAddress;
     }
   });
 
-  console.log({IPs});
+  log && console.log({IPs});
 };
 
 /** Find the best match (or exact match) among container names */
 const lookup = (name) => {
   let min = 1e9;
   let argmin;
-  Object.keys(IPs).forEach(containerName => {
-    const match = containerName.match(name);
-    if (match && containerName.length < min) {
-      min = containerName.length;
-      argmin = IPs[containerName];
+  Object.keys(IPs).forEach(imageName => {
+    const match = imageName.match(name);
+    if (match && imageName.length < min) {
+      min = imageName.length;
+      argmin = IPs[imageName];
     }
   });
 
@@ -41,7 +42,7 @@ const lookup = (name) => {
 
 const startMDNS = async () => {
 
-  await refreshContainerIPs();
+  await refreshContainerIPs(true);
   setInterval(refreshContainerIPs, 30 * 1e3);
 
   mdns.on('query', async (query) => {
