@@ -15,10 +15,10 @@ const refreshContainerIPs = async (log = false) => {
   const list = await docker.listContainers();
   list.forEach(c => {
     // const name = c.Names[0].slice(1); // remove '/'
-    const image = c.Image;
     for (let net in c.NetworkSettings.Networks) {
       if (c.NetworkSettings.Networks[net].IPAddress)
-        IPs[image] = c.NetworkSettings.Networks[net].IPAddress;
+        IPs[c.Image] = c.NetworkSettings.Networks[net].IPAddress;
+        IPs[c.Names[0].slice(1)] = c.NetworkSettings.Networks[net].IPAddress;
     }
   });
 
